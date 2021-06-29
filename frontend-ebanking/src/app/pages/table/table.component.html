@@ -1,0 +1,221 @@
+<button (click)="onOpenModal(null,'createAgent')" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="btn btn-success">Create Agent</i></button>
+<button (click)="onOpenModal(null,'createAgence')" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="btn btn-success">Create Agence</i></button>
+
+
+<!-- create Modal Agent -->
+<div class="modal fade" id="createAgentModal" tabindex="-1" role="dialog" aria-labelledby="agentEditModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="updateEmployeeModalLabel">Create Agent </h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form #addForm="ngForm">
+              <div class="form-group">
+                 <label for="name">Nom :</label>
+                 <input type="text" ngModel name="nom" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name" #firstName="ngModel" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!firstName.valid && firstName.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="firstName.errors.required"> Firstname is required </div>
+                  <div *ngIf="firstName.errors.minlength">You need to write at least 3 caracters</div>
+               </div>
+               </div>
+              <div class="form-group">
+               <label for="name">Prenom :</label>
+               <input type="text" ngModel name="prenom" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name" #lastName="ngModel" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!lastName.valid && lastName.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="lastName.errors.required"> lastName is required </div>
+                  <div *ngIf="lastName.errors.minlength">You need to write at least 3 caracters</div>
+               </div>
+            </div>
+            <div class="form-group">
+               <label for="username">Mot de compte :</label>
+               <input type="text" ngModel name="username" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Username" #username="ngModel"  required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!username.valid && username.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="username.errors.required"> Username is required </div>
+                  <div *ngIf="username.errors.minlength">You need to write at least 3 caracters</div>
+               </div>
+            </div>
+              <div class="form-group">
+                 <label for="email">Email :</label>
+                 <input type="email"  ngModel name="email" class="form-control" id="email" placeholder="Email" #Email="ngModel" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!Email.valid && Email.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="Email.errors.required"> Email is required </div>
+                  <div *ngIf="Email.errors.minlength">You need to write at least 3 caracters</div>
+               </div>
+              </div>
+              <div class="form-group">
+                 <label for="phone">Cin:</label>
+                 <input ngModel type="text"  name="cin" class="form-control" id="jobTitle" placeholder="CIN" #cin="ngModel">
+                 <div class="alert alert-danger" *ngIf="!cin.valid && cin.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="cin.errors.required"> cin is required </div>
+                  <div *ngIf="cin.errors.minlength">You need to write at least 3 caracters</div>
+              </div>
+              </div>
+              <div class="form-group">
+                 <label for="phone">Adresse :</label>
+                 <input ngModel #adresse="ngModel" type="text"  name="adresse" class="form-control" id="phone" name="phone" placeholder="Address">
+                 <div class="alert alert-danger" *ngIf="!adresse.valid && adresse.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="adresse.errors.required"> Address is required </div>
+                  <div *ngIf="adresse.errors.minlength">You need to write at least 3 caracters</div>
+              </div>
+              </div>
+              <div class="form-group">
+                 <label for="phone">Telephone :</label>
+                 <input ngModel #phone="ngModel" type="text" name="telephone" class="form-control" id="imageUrl" placeholder="Phone" required minlength="10">
+                 <div class="alert alert-danger" *ngIf="!phone.valid && phone.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="phone.errors.required"> Phone number is required </div>
+                  <div *ngIf="phone.errors.minlength">You need to write at least 10 caracters</div>-->
+              </div>
+              </div>
+              <div class="form-group">
+                  <label for="numC">Choisir une Agence :</label>
+                  <select name="numC" placeholder="L'agence" class="form-control"  ngModel id="exampleFormControlSelect2" (change)="selectOption($event.target.value)">
+                    <option *ngFor="let agence of agences" name="numC" value="{{agence.nom}}" >{{agence.nom}}</option>
+                  </select>
+                </div>
+            <div class="form-group">
+               <label for="pass">Mot de passe :</label>
+               <input ngModel #password="ngModel" type="text" name="password" class="form-control" id="pass" placeholder="Password" required minlength="8">
+               <div class="alert alert-danger" *ngIf="!password.valid && password.touched" style="color: rgb(243, 207, 4); ">
+                <div *ngIf="pass.errors.required"> Password is required </div>
+                <div *ngIf="pass.errors.minlength">You need to write at least 10 caracters</div>
+            </div>
+            </div>
+               
+              <div class="modal-footer">
+                 <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                 <button [disabled]=addForm.invalid (click)="onAddAgent(addForm)" data-dismiss="modal" class="btn btn-primary" >Add Agent</button>
+              </div>
+           </form> 
+        </div>
+     </div>
+  </div>
+</div>
+
+<!---->
+    <!-- create Modal Agence -->
+<div class="modal fade" id="createAgenceModal" tabindex="-1" role="dialog" aria-labelledby="agentEditModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="updateEmployeeModalLabel">Create Agence </h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form #addFormAgence="ngForm">
+              <div class="form-group">
+                 <label for="phone">Nom d'agence :</label>
+                 <input type="text" ngModel #Agence="ngModel" name="nom" class="form-control" id="imageUrl" placeholder="Agence" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!Agence.valid && Agence.touched" style="color: rgb(243, 207, 4); ">
+                   <div *ngIf="Agence.errors.required">Agence is required </div>
+                   <div *ngIf="Agence.errors.minlength">You need to write at least 3 caracters</div>
+                </div>   
+                </div>
+                <div class="form-group">
+                 <label for="adresse">Adresse :</label>
+                 <input ngModel="adresse" #Adresse="ngModel" type="text"  name="adresse" class="form-control" id="adresse" name="adresse" placeholder="Address" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!Adresse.valid && Adresse.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="Adresse.errors.required"> Adresse is required </div>
+                  <div *ngIf="Adresse.errors.minlength">You need to write at least 3 caracters</div>
+              </div>
+              </div>
+              <div class="form-group">
+                 <label for="phone">Phone Number :</label>
+                 <input ngModel="phone" #Phone="ngModel" type="text" name="telephone" class="form-control" id="imageUrl" placeholder="Phone" required minlength="10">
+                 <div class="alert alert-danger" *ngIf="!Phone.valid && Phone.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="Phone.errors.required"> Phone number is required </div>
+                  <div *ngIf="Phone.errors.minlength">You need to write at least 10 caracters</div>-->
+              </div>
+              </div>
+              <div class="form-group">
+                 <label for="email">Email :</label>
+                 <input type="email"  ngModel="email" name="email" class="form-control" id="email" placeholder="Email" #mail="ngModel" required minlength="3">
+                 <div class="alert alert-danger" *ngIf="!mail.valid && mail.touched" style="color: rgb(243, 207, 4); ">
+                  <div *ngIf="mail.errors.required"> Email is required </div>
+                  <div *ngIf="mail.errors.minlength">You need to write at least 3 caracters</div>
+               </div>
+              </div>
+              <div class="modal-footer">
+                 <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                 <button [disabled]=addFormAgence.invalid (click)="onAddAgence(addFormAgence)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
+</div>
+<!---->
+
+<div class="row" id='main-container'>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Mes agents :</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class=" text-primary">
+              <th>Nom</th>
+              <th>Prenom</th>
+              <th>CIN</th>
+              <th>Address</th>
+              <th>Email</th>
+              <th>Telephone</th>
+              <th>Agence</th>
+              <th>Admin</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let agent of agents">
+                <td>{{ agent.nom }}</td>
+                <td>{{ agent.prenom }}</td>
+                <td>{{ agent.cin }}</td>
+                <td>{{ agent.adresse }}</td>
+                <td>{{ agent.email }}</td>
+                <td>{{ agent.telephone }}</td>
+                <td>{{ agent.agence.nom }}</td>
+                <td>{{ agent.creationAdmin.nom }} {{agent.creationAdmin.prenom}}</td>
+                <button (click)="onOpenModal(agent,'edit')" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit"></i></button>
+                <button (click)="deleteAgent(agent.id,agent.nom)" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></button>              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- edit Modal -->
+<div class="modal fade" id="updateAgentModal" tabindex="-1" role="dialog" aria-labelledby="agentEditModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="updateEmployeeModalLabel" style="font-size: 13pt;font-weight: bold;">Modifier Agence: </h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form>
+            <div class="form-group">
+               <label for="numC">Choisir une Agence :</label>
+               <select name="numC" [(ngModel)]="newAgence" placeholder="L'agence" class="form-control">
+                 <option *ngFor="let agence of agences" name="numC" value="{{agence.nom}}" >{{agence.nom}}</option>
+               </select>
+             </div>
+              <div class="modal-footer">
+                 <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Fermer</button>
+                 <button (click)="updateAgenceOfAgent(newAgence)" data-dismiss="modal" class="btn btn-primary" >Enregistrer</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
+</div>
+</div>

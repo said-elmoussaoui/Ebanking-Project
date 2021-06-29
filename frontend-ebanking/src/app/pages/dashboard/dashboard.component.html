@@ -1,0 +1,419 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+<div *ngIf="currentUser.role == 'Client' " id="main-container">
+
+  <button (click)="onOpenModal()" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="nc-icon nc-simple-add"></i> Nouveau Virement</button>
+
+  <div class="modal fade" id="addCustomer" tabindex="-1" role="dialog" aria-labelledby="addCustomerLabel" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="updateEmployeeModalLabel" style="font-size:12pt;font-weight: bold;">Nouveau Virement</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <div class="modal-body">
+             <form #addForm="ngForm">
+                <div class="form-group">
+                  <label for="numC">Numéro de compte du émétteur :</label>
+                  <select name="numC" [(ngModel)]="numCreancier" placeholder="num Creancier" class="form-control">
+                    <option *ngFor="let compte of comptes" name="numC" value="{{compte.numero}}" >{{compte.numero}}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                   <label for="numD"> Numéro de compte du bénéficiaire:</label>
+                   <input type="text"  [(ngModel)]="numDebiteur" name="numD" class="form-control" id="debiteur" placeholder="num debiteur">
+                </div>
+                <div class="form-group">
+                  <label for="sommeEnv">somme à envoyer:</label>
+                  <input type="number" [(ngModel)]="sommeEnv" name="sommeEnv" class="form-control" id="sommeEnv" placeholder="0000.00 DH">
+               </div>
+               <button (click)="addCompteVirm(numCreancier,numDebiteur,sommeEnv);" class="btn btn-primary">Ajouter au bénéficiaires</button>
+                   <table class="table table-hover" *ngIf="this.listDebiteurs.length!=0">
+                    <thead>
+                      <tr>
+                        <td scopte="col">émétteur</td>
+                        <td scope="col">bénéficiaire</td>
+                        <td scope="col">Montant</td>
+                        <td scope="col">Supprimer de la liste</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let debiteur of this.listDebiteurs">
+                        <th scope="row">{{debiteur.creancier}}</th>
+                        <th scope="row">{{debiteur.debiteur}}</th>
+                        <th scope="row">{{debiteur.montant}} DH</th>
+                        <td><button class="btn btn-primary mb-2" (click)="deleteDebiteurFromList(listDebiteurs.indexOf(debiteur))">Supprimer</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                <div class="modal-footer">
+                   <button (click)="EmptyList()" type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                   <button (click)="addVirement()" data-dismiss="modal" class="btn btn-primary" >Efefctuer virement</button>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+  </div>
+ <div *ngFor="let compte of comptes">
+  
+  <h1>
+    <span *ngIf="compte.type == 'VISA'"><i class="fab fa-cc-visa" style="font-size:25pt;color: blue;"></i></span>
+    <span *ngIf="compte.type == 'MasterCard'"><i class="fab fa-cc-mastercard" style="font-size:25pt;color: red;"></i></span>
+    Compte numéro {{compte.numero}} :
+  </h1>
+  <div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-body ">
+          <div class="row">
+            <div class="col-5 col-md-4">
+              <div class="icon-big text-center icon-warning">
+                <i class="nc-icon nc-globe text-warning"></i>
+              </div>
+            </div>
+            <div class="col-7 col-md-8">
+              <div class="numbers">
+                <p class="card-category">Solde Total</p>
+                <p class="card-title">{{compte.solde | number:'1.2-2' }} {{compte.devise}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-body ">
+          <div class="row">
+            <div class="col-5 col-md-4">
+              <div class="icon-big text-center icon-warning">
+                <i class="nc-icon nc-minimal-down text-danger"></i>
+              </div>
+            </div>
+            <div class="col-7 col-md-8">
+              <div class="numbers">
+                <p class="card-category">Débit</p>
+                <p class="card-title">- {{compte.debitMois | number:'1.2-2'}} {{compte.devise}}
+                  <p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer ">
+          <hr>
+          <div class="stats">
+            <i class="fa fa-calendar-o"></i> Ce mois
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-body ">
+          <div class="row">
+            <div class="col-5 col-md-4">
+              <div class="icon-big text-center icon-warning">
+                <i class="nc-icon nc-minimal-up text-success"></i>
+              </div>
+            </div>
+            <div class="col-7 col-md-8">
+              <div class="numbers">
+                <p class="card-category">Crédit</p>
+                <p class="card-title">+ {{compte.creditMois | number:'1.2-2'}} {{compte.devise}}
+                  <p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer ">
+          <hr>
+          <div class="stats">
+            <i class="fa fa-clock-o"></i> Ce mois
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Virements envoyés <span *ngIf="compte.virementsEnvoyes != undefined">({{compte.virementsEnvoyes.length}}) : </span></h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class=" text-primary">
+                  <th>Bénéficiaire</th>
+                  <th>Somme envoyée</th>
+                  <th>Date</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let virement of compte.virementsEnvoyes">
+                    <td>{{ virement.debiteur.proprietaire.nom }} {{ virement.debiteur.proprietaire.prenom}} </td>
+                    <td>{{ virement.sommeEnv }}</td>
+                    <td>{{ virement.date | date:'dd/MM/yyyy hh:mm' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title"> Virements reçues <span *ngIf="compte.virementsRecus != undefined">({{compte.virementsRecus.length}}) :</span></h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class=" text-primary">
+                  <th>Emétteur</th>
+                  <th>Somme reçue</th>
+                  <th>Date</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let virement of compte.virementsRecus">
+                    <td>{{ virement.creancier.proprietaire.nom }} {{ virement.creancier.proprietaire.prenom }}</td>
+                    <td>{{ virement.sommeRecu }}</td>
+                    <td>{{ virement.date |  date:'dd/MM/yyyy hh:mm' }}</td>            
+                   </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title"> Opérations <span *ngIf="compte.operations != undefined">({{compte.operations.length}}) :</span></h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>Type</th>
+                <th>Somme espece</th>
+                <th>Somme compte</th>
+                <th>Date</th>
+                <th>Devise</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let operation of compte.operations">
+                  <td>{{ operation.type }}</td>
+                  <td>{{ operation.sommeEspece }}</td>
+                  <td>{{ operation.sommeCompte }}</td>
+                  <td>{{ operation.date |  date:'dd/MM/yyyy hh:mm' }}</td>
+                  <td>{{ operation.devise }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+ </div>
+ </div>
+ <div  *ngIf="currentUser.role == 'Agent'" id="main-container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card ">
+        <div class="card-header ">
+          <h2 class="card-title" >Agence :  {{agencee.nom}}</h2>
+          <p class="card-category">Adresse : {{agencee.adresse}}</p>
+          <p  class="card-category">Telephone : {{agencee.telephone}}</p>
+          <p  class="card-category">Email : {{agencee.email}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-16">
+      <div class="card card-chart">
+        <div class="card-header">
+          <h2 class="card-title">List des clients <span style="font-size:small">({{clients.length}})</span> :</h2>
+        </div>
+        <table class="table">
+          <thead class=" text-primary">
+            <th> Nom</th>
+            <th>Prenom</th>
+            <th>Cin</th>
+            <th>Adresse</th>
+            <th>Telephone</th>
+            <th>Agence</th>
+            <th>Status</th>
+            <th>Action</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of clients " style="cursor: pointer;" (click)="showComptes(client.id)">
+              <td>{{ client.nom }}</td>
+              <td>{{ client.prenom}}</td>
+              <td>{{ client.cin }}</td>
+              <td>{{ client.adresse}}</td>
+              <td>{{ client.telephone}}</td>
+              <td>{{client.agence.nom}}</td>
+              <td>{{client.status}}</td>
+              <td>
+                <button  (click)="onOpenModal2(client)" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit"></i></button>
+                <button (click)="deleteClient(client.id,client.nom)" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></button>
+                <button (click)="addCompte(client.id)" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="nc-icon nc-simple-add"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+      <div class="col-md-16" *ngIf="comptesOfClient.length != 0">
+        <!---->
+        <div class="card card-chart">
+          <div class="card-header">
+            <h2 class="card-title">Liste des comptes <span style="font-size:small">({{comptesOfClient.length}})</span> :</h2>
+          </div>
+          <table class="table">
+            <thead class=" text-primary">
+              <th>N° de compte</th>
+              <th>Type</th>
+              <th>Solde</th>
+              <th>Devise</th>
+              <th>Date de création</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let compte of comptesOfClient ">
+                <td>{{ compte.numero }}</td>
+                <td>
+                  <span *ngIf="compte.type == 'VISA'"><i class="fab fa-cc-visa" style="font-size:25pt;color: blue;"></i></span>
+                  <span *ngIf="compte.type == 'MasterCard'"><i class="fab fa-cc-mastercard" style="font-size:25pt;color: red;"></i></span>
+                </td>
+                <td>{{ compte.solde | number:'1.2-2' }}</td>
+                <td>{{ compte.devise}}</td>
+                <td>{{ compte.creationDate | date:'dd/MM/yyyy hh:mm'}}</td>
+                <td>
+                  <button (click)="deleteCompte(compte.id,compte.proprietaire.id)" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></button>
+                  <button (click)="addOperation(compte,'versement')" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="nc-icon nc-simple-add"></i></button>
+                  <button (click)="addOperation(compte,'retrait')" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="nc-icon nc-simple-delete"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+        
+        <!---->
+      </div>
+    </div>
+    </div>
+  
+  <!--
+       Debut
+  -->
+  <div class="modal fade" id="updateClientModal" tabindex="-1" role="dialog"  aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="updateEmployeeModalLabel" style="font-size: 13pt;font-weight: bold;">Modifier client : </h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+             </button>
+          </div>
+          <div class="modal-body">
+             <form #editForm="ngForm">
+                <div class="form-group">
+                   <label for="name">Nom :</label>
+                   <input type="text" ngModel="{{tempClient?.nom}}" name="nom" class="form-control" id="name"  placeholder="Nom">
+                </div>
+                <div class="form-group">
+                  <label for="phone">Prenom  :</label>
+                  <input type="text" ngModel="{{tempClient?.prenom}}"  name="prenom" class="form-control" id="prenom" placeholder="Prenom ">
+               </div>
+               <div class="form-group">
+                <label for="name">Nom de compte :</label>
+                <input type="text" ngModel="{{tempClient?.username}}" name="username" class="form-control" id="username"  placeholder="Nom de compte">
+               </div>
+                <div class="form-group">
+                   <label for="email">Email :</label>
+                   <input type="email" ngModel="{{tempClient?.email}}"  name="email" class="form-control" id="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                   <label for="phone">Cin:</label>
+                   <input type="text" ngModel="{{tempClient?.cin}}" name="cin" class="form-control" id="cin" placeholder="CIN">
+                </div>
+                <div class="form-group">
+                   <label for="phone">Address :</label>
+                   <input type="text" ngModel="{{tempClient?.adresse}}" name="adresse" class="form-control" id="adresse" name="adresse" placeholder="Adresse">
+                </div>
+                <div class="form-group">
+                   <label for="phone">Telephone :</label>
+                   <input type="text" ngModel="{{tempClient?.telephone}}" name="telephone" class="form-control" id="phone" placeholder="Télephone">
+                </div>
+                <div class="form-group">
+                  <label for="phone">Noveau mot de passe :</label>
+                  <input type="text" ngModel="" name="password" class="form-control" id="imageUrl" placeholder="Mot de passe">
+               </div>
+                <div class="modal-footer">
+                   <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Fermer</button>
+                   <button (click)="updateClient(tempClient?.id,editForm)" data-dismiss="modal" class="btn btn-primary" >Enregistrer</button>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+  </div>
+  <!--
+    Fin
+  -->
+</div>
+
+<!--
+  Admin
+-->
+
+</div>
+<div class="col-md-16"  *ngIf="currentUser.role == 'Admin'">
+  <div class="card card-chart">
+    <div class="card-header">
+      <h2 class="card-title">List des nouveau clients <span style="font-size:small">{{clientNonValide.length}}</span> :</h2>
+    </div>
+    <table class="table">
+      <thead class=" text-primary">
+        <th> Nom</th>
+        <th>Prenom</th>
+        <th>Cin</th>
+        <th>Adresse</th>
+        <th>Telephone</th>
+        <th>Agence</th>
+        <th>Status</th>
+        <th>Action</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let client of clientNonValide " style="cursor: pointer;">
+          
+          <td>{{ client.nom }}</td>
+          <td>{{ client.prenom}}</td>
+          <td>{{ client.cin }}</td>
+          <td>{{ client.adresse}}</td>
+          <td>{{ client.telephone}}</td>
+          <td>{{client.agence.nom}}</td>
+          <td>{{ client.status}}</td>
+          <td>
+            <button (click)="valideClient(client.id)" class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fas fa-user-check" style="font-size: 13pt;color:rgb(4, 255, 4)"></i></button>
+            <button (click)="valideClient(client.id)" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></button>          
+           
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+

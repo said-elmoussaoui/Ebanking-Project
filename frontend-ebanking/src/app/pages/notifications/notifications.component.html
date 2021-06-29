@@ -1,0 +1,44 @@
+<div class="row" id='main-container'>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title"> Mes Rendez Vous :</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class=" text-primary">
+              <th>
+                Date
+              </th>
+              <th>
+                Title
+              </th>
+              <th>
+                Description
+              </th>
+              <th>
+                Agent
+              </th>
+              <th>
+                Agence
+              </th>
+              <th>
+                Status
+              </th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rendezVouss of rendezVous">
+                <td>{{rendezVouss.forDate}}</td>
+                <td>{{rendezVouss.title}}</td>
+                <td>{{rendezVouss.description}}</td>
+                <td>{{rendezVouss.agent.nom}}</td>
+                 <td>{{rendezVouss.agent.agence.nom}}</td>
+                <td>{{rendezVouss.status}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

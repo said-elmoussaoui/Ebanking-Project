@@ -1,0 +1,31 @@
+
+<div class="wrapper fadeInDown" >
+  <div id="formContent">
+    <h2 class="active"> Connexion </h2> 
+    <form [formGroup]="form" (ngSubmit)="checkLogin()">
+      <input
+          type="text"
+          class="form-control fadeIn second" 
+          (keyup)="initializeError()"
+          placeholder="Username"
+          formControlName="username"
+          required
+        />
+      <p style="color: red" *ngIf="username.touched && username.errors?.required">
+        Nom de compte obligatoire !
+      </p> 
+      <input
+      class="form-control fadeIn second" 
+      (keyup)="initializeError()"
+      type="password"
+      placeholder="Password"
+      formControlName="password"
+      required
+    />
+      <p style="color: red" *ngIf="password.touched && password.errors?.required">
+         Mot de passe est obligatoire !!!
+      </p>
+      <input type="submit"  class="fadeIn fourth" value="Se connecter">
+    </form>
+  </div>
+</div>
